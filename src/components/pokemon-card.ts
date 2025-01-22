@@ -40,8 +40,8 @@ export class PokemonCard extends LitElement {
           <div class="flex gap-2 flex-wrap">
             ${this.pokemon.types.map(
               ({ type }) => html`
-                <span class="px-3 py-1 rounded-full text-sm font-medium text-white bg-[${this.getTypeColor(type.name)}]
-                             shadow-sm transform transition-transform duration-300 hover:scale-105">
+                <span class="px-3 py-1 rounded-full text-sm font-medium ${this.getTypeClass(type.name)}
+                             shadow-sm">
                   ${type.name}
                 </span>
               `
@@ -51,9 +51,9 @@ export class PokemonCard extends LitElement {
       </div>
     `;
   }
-
-  private getTypeColor(type: string): string {
-    const colors: Record<string, string> = {
+  
+  private getTypeClass(type: string): string {
+    const typeClasses: Record<string, string> = {
       normal: '#A8A878',
       fire: '#F08030',
       water: '#6890F0',
@@ -73,6 +73,6 @@ export class PokemonCard extends LitElement {
       steel: '#B8B8D0',
       fairy: '#EE99AC'
     };
-    return colors[type] || '#777';
+    return `bg-[${typeClasses[type]}]`|| 'bg-gray-400'; // Default fallback
   }
 }

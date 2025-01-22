@@ -1,22 +1,22 @@
 {
-  "name": "pokelit",
+  "name": "lit-boilerplate",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "lit": "^3.2.1",
-    "lit-element": "^4.1.1",
-    "lit-html": "^3.2.1"
+    "lit": "^3.1.2",
+    "@lit/task": "^1.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.1",
-    "tailwindcss": "^3.4.17",
-    "vite": "^6.0.5"
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1"
   }
 }

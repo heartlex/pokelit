@@ -3,6 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import './components/pokemon-card';
 import './components/pokemon-details';
 import './components/pokemon-search';
+import './components/pokemon-list-size';
 import { Pokemon, PokemonListResponse } from './types';
 import style from './index.css?inline';
 
@@ -23,7 +24,10 @@ export class MyApp extends LitElement {
   @state()
   private currentPage = 1;
 
-  private readonly pageSize = 20;
+  @state()
+  private pageSize = 20;
+  
+  private pokemon151: Pokemon[] = [];
 
   static styles = [
     unsafeCSS(style),
@@ -39,6 +43,7 @@ export class MyApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this.loadPokemon();
+    this.load151Pokemon();
   }
 
   async loadPokemon() {
@@ -62,9 +67,35 @@ export class MyApp extends LitElement {
       this.loading = false;
     }
   }
+  async load151Pokemon() {
+    try {
+      const response = await fetch(
+        `https://pokeapi.co/api/v2/pokemon?limit=151`
+      );
+      const data: PokemonListResponse = await response.json();
+      
+      const pokemonDetails = await Promise.all(
+        data.results.map(async (pokemon) => {
+          const response = await fetch(pokemon.url);
+          return response.json();
+        })
+      );
+      
+      this.pokemon151 = pokemonDetails;
+      this.loading = false;
+      
+    } catch (error) {
+      console.error('Error loading 1st gen Pokemons:', error);
+      this.loading = false;
+      
+    }
+  }
 
   private get filteredPokemon() {
-    return this.pokemon.filter(pokemon =>
+    return !!this.searchQuery ? this.pokemon151.filter(pokemon =>
+      pokemon.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      pokemon.id.toString().includes(this.searchQuery)
+    ): this.pokemon.filter(pokemon =>
       pokemon.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       pokemon.id.toString().includes(this.searchQuery)
     );
@@ -72,6 +103,16 @@ export class MyApp extends LitElement {
 
   private handleSearch(e: CustomEvent) {
     this.searchQuery = e.detail.value;
+  }
+  
+  private handleSize(e: CustomEvent) {
+    const newPageSize = e.detail.value
+    if (newPageSize !== this.pageSize) {
+      this.pageSize = newPageSize;
+      this.pokemon = [];
+      this.currentPage = 1;
+      this.loadPokemon();
+    }
   }
 
   render() {
@@ -84,6 +125,10 @@ export class MyApp extends LitElement {
               .value=${this.searchQuery}
               @search=${this.handleSearch}
             ></pokemon-search>
+            <pokemon-list-size
+              .value=${this.pageSize}
+              @size="${this.handleSize}"
+            ></pokemon-list-size>
           </div>
         </div>
 

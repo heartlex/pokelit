@@ -6,6 +6,9 @@ import style from '../index.css?inline';
 export class PokemonSearch extends LitElement {
   @property()
   value = '';
+  
+  @property()
+  withButton = false;
 
   @state()
   private inputValue = '';
@@ -25,17 +28,13 @@ export class PokemonSearch extends LitElement {
   private handleInput(e: Event) {
     const input = e.target as HTMLInputElement;
     this.inputValue = input.value;
-    
-    if (this.debounceTimer) {
-      window.clearTimeout(this.debounceTimer);
-    }
-
-    this.debounceTimer = window.setTimeout(() => {
-      this.value = this.inputValue;
-      this.dispatchEvent(new CustomEvent('search', {
-        detail: { value: this.inputValue }
-      }));
-    }, this.debounceTime);
+  }
+  
+  private handleClick() {
+    this.value = this.inputValue;
+    this.dispatchEvent(new CustomEvent('search', {
+      detail: { value: this.inputValue }
+    }));
   }
 
   render() {
@@ -53,11 +52,12 @@ export class PokemonSearch extends LitElement {
             .value=${this.inputValue}
             @input=${this.handleInput}
           />
-          <div class="absolute right-4 top-1/2 transform -translate-y-1/2 
+          <button class="absolute right-4 top-1/2 transform -translate-y-1/2
                       bg-white/20 text-white w-10 h-10 flex items-center justify-center 
-                      rounded-lg backdrop-blur-sm">
+                      rounded-lg backdrop-blur-sm hover:bg-white/40"
+          @click="${this.handleClick}">
             🔍
-          </div>
+          </button>
         </div>
         <p class="text-white/70 mt-3 text-sm">
           Search for a Pokémon by name or using its National Pokédex number

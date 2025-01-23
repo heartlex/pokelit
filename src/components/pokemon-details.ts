@@ -18,6 +18,8 @@ export class PokemonDetails extends LitElement {
   ];
 
   render() {
+    //
+    document.body.style.overflow = 'hidden';
     if (!this.pokemon) return null;
 
     return html`
@@ -77,6 +79,7 @@ export class PokemonDetails extends LitElement {
   }
 
   private _close() {
+    document.body.style.overflow = 'auto';
     this.dispatchEvent(new CustomEvent('close'));
   }
 }

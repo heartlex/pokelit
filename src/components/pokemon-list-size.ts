@@ -34,7 +34,7 @@ export class PokemonListSize extends LitElement {
             class="w-full px-6 py-4 appearance-none rounded-xl bg-white/10 text-white
                    border-2 border-white/20 backdrop-blur-sm
                    focus:outline-none focus:border-white/40 focus:bg-white/20
-                   transition-all duration-300"
+                   transition-all duration-300 hover:cursor-pointer"
             .value=${this.value.toString()}
             @change=${this.handleChange}
           >

@@ -4,7 +4,7 @@ import './components/pokemon-card';
 import './components/pokemon-details';
 import './components/pokemon-search';
 import './components/pokemon-list-size';
-import { Pokemon, PokemonListResponse } from './types';
+import {Pokemon, PokemonListResponse, PokemonResponse} from './types';
 import style from './index.css?inline';
 
 @customElement('my-app')
@@ -27,7 +27,7 @@ export class MyApp extends LitElement {
   @state()
   private pageSize = 20;
   
-  private pokemon151: Pokemon[] = [];
+  private allPokemon: Pokemon[] = [];
 
   static styles = [
     unsafeCSS(style),
@@ -70,18 +70,18 @@ export class MyApp extends LitElement {
   async load151Pokemon() {
     try {
       const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon?limit=151`
+        `https://pokeapi.co/api/v2/pokemon?limit=10277`
       );
       const data: PokemonListResponse = await response.json();
       
       const pokemonDetails = await Promise.all(
         data.results.map(async (pokemon) => {
           const response = await fetch(pokemon.url);
-          return response.json();
+          return response.json() as PokemonResponse;
         })
       );
       
-      this.pokemon151 = pokemonDetails;
+      this.allPokemon = pokemonDetails;
       this.loading = false;
       
     } catch (error) {
@@ -92,7 +92,7 @@ export class MyApp extends LitElement {
   }
 
   private get filteredPokemon() {
-    return !!this.searchQuery ? this.pokemon151.filter(pokemon =>
+    return !!this.searchQuery ? this.allPokemon.filter(pokemon =>
       pokemon.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       pokemon.id.toString().includes(this.searchQuery)
     ): this.pokemon.filter(pokemon =>
